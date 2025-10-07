@@ -1,0 +1,28 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#1a472a" rx="60"/>
+  
+  <!-- Construction Icon -->
+  <g transform="translate(256,256)">
+    <!-- Hard hat -->
+    <circle cx="0" cy="-80" r="70" fill="#ffd700" stroke="#fff" stroke-width="6"/>
+    <ellipse cx="0" cy="-40" rx="80" ry="22" fill="#ffed4e"/>
+    
+    <!-- Construction elements -->
+    <rect x="-120" y="30" width="240" height="20" fill="#ffd700" rx="10"/>
+    <rect x="-100" y="60" width="200" height="16" fill="#ffed4e" rx="8"/>
+    <rect x="-80" y="85" width="160" height="12" fill="#ffd700" rx="6"/>
+    
+    <!-- Tools -->
+    <rect x="-130" y="-10" width="12" height="50" fill="#ccc" rx="6"/>
+    <rect x="118" y="-10" width="12" height="50" fill="#ccc" rx="6"/>
+    
+    <!-- Additional details -->
+    <circle cx="-60" cy="0" r="8" fill="#fff"/>
+    <circle cx="60" cy="0" r="8" fill="#fff"/>
+  </g>
+  
+  <!-- Company text -->
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+        text-anchor="middle" fill="#ffd700">REMC</text>
+</svg>

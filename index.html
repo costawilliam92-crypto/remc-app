@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REMC Project Management</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1a472a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="REMC">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a472a, #2d5a3d);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(0,0,0,0.2);
+            padding: 15px 20px;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .navbar h1 {
+            color: #ffd700;
+            font-size: 1.5em;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .hero h1 {
+            color: #ffd700;
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .install-section {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .install-btn {
+            background: #ffd700;
+            color: #1a472a;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .install-btn:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .nav-btn {
+            background: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .nav-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .feature-card h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .success { background: rgba(40, 167, 69, 0.3); color: #28a745; }
+        .warning { background: rgba(255, 193, 7, 0.3); color: #ffc107; }
+        .info { background: rgba(23, 162, 184, 0.3); color: #17a2b8; }
+        
+        .manual-install {
+            background: rgba(0,0,0,0.3);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .platform {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+        
+        .platform strong {
+            color: #ffd700;
+            font-size: 1.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2em; }
+            .container { padding: 10px; }
+            .install-btn { width: 100%; margin: 5px 0; }
+            .nav-btn { width: 100%; margin: 5px 0; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>🏗️ REMC Project Management</h1>
+    </nav>
+    
+    <div class="container">
+        <div class="hero">
+            <h1>Welcome to REMC</h1>
+            <p>Professional Construction & Earthmoving Project Management</p>
+            <div id="status"></div>
+        </div>
+        
+        <div class="install-section">
+            <h2 style="color: #ffd700; margin-bottom: 20px;">📱 Install as Native App</h2>
+            <p style="margin-bottom: 20px;">Get the full app experience on your device!</p>
+            
+            <button id="installBtn" class="install-btn" onclick="installApp()">
+                📱 Install REMC App
+            </button>
+            
+            <br>
+            
+            <a href="#projects" class="nav-btn" onclick="showProjects()">
+                📋 View Projects
+            </a>
+            
+            <a href="#dashboard" class="nav-btn" onclick="showDashboard()">
+                📊 Dashboard
+            </a>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div>Active Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">$1.38M</div>
+                <div>Total Project Value</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2</div>
+                <div>Completed This Month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">60</div>
+                <div>Team Members</div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <h3>📋 Project Management</h3>
+                <p>Track construction projects from quote to completion with comprehensive project oversight.</p>
+            </div>
+            <div class="feature-card">
+                <h3>💰 Financial Tracking</h3>
+                <p>Monitor project costs, quotes, and profitability in real-time.</p>
+            </div>
+            <div class="feature-card">
+                <h3>👥 Team Collaboration</h3>
+                <p>Keep your entire team connected and informed on project progress.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📱 Mobile Access</h3>
+                <p>Access your projects anywhere with our native mobile app experience.</p>
+            </div>
+        </div>
+        
+        <div id="projects-section" style="display: none;">
+            <h2 style="color: #ffd700; margin: 30px 0;">Current Projects</h2>
+            <div id="projects-list"></div>
+        </div>
+        
+        <div class="manual-install">
+            <h3 style="color: #ffd700; margin-bottom: 20px;">📋 Manual Installation Instructions</h3>
+            
+            <div class="platform">
+                <strong>📱 iPhone/iPad (Safari):</strong><br>
+                1. Tap the Share button (□↗) at the bottom<br>
+                2. Scroll down and tap "Add to Home Screen"<br>
+                3. Tap "Add" to confirm<br>
+                4. ✅ App appears on your home screen!
+            </div>
+            
+            <div class="platform">
+                <strong>🤖 Android (Chrome):</strong><br>
+                1. Tap the menu button (⋮) in top right<br>
+                2. Tap "Add to Home Screen" or "Install App"<br>
+                3. Tap "Add" or "Install"<br>
+                4. ✅ App installs like from Google Play!
+            </div>
+            
+            <div class="platform">
+                <strong>💻 Desktop (Chrome/Edge):</strong><br>
+                1. Look for install icon in address bar<br>
+                2. Or use menu → "Install REMC App"<br>
+                3. Click "Install"<br>
+                4. ✅ App added to desktop!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample project data
+        const projects = [
+            {
+                id: "REMC-001",
+                name: "Highway Construction Phase 1",
+                client: "City Council",
+                status: "In Progress",
+                value: 450000,
+                completion: 65
+            },
+            {
+                id: "REMC-002", 
+                name: "Shopping Center Development",
+                client: "Retail Group Ltd",
+                status: "Quoted",
+                value: 280000,
+                completion: 15
+            },
+            {
+                id: "REMC-003",
+                name: "Residential Subdivision",
+                client: "Housing Corp", 
+                status: "Completed",
+                value: 650000,
+                completion: 100
+            }
+        ];
+
+        // PWA Installation
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+        const status = document.getElementById('status');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+            showStatus('✅ App ready for installation!', 'success');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            showStatus('🎉 App installed successfully! Check your home screen!', 'success');
+            installBtn.style.display = 'none';
+        });
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showStatus('📥 Installing app...', 'warning');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                showStatus('📋 Use manual installation instructions below', 'info');
+            }
+        }
+
+        function showStatus(message, type) {
+            status.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function showProjects() {
+            const projectsSection = document.getElementById('projects-section');
+            const projectsList = document.getElementById('projects-list');
+            
+            projectsSection.style.display = 'block';
+            projectsList.innerHTML = '';
+            
+            projects.forEach(project => {
+                const statusColor = project.status === 'Completed' ? '#28a745' : 
+                                  project.status === 'In Progress' ? '#ffc107' : '#17a2b8';
+                
+                const projectCard = document.createElement('div');
+                projectCard.className = 'feature-card';
+                projectCard.innerHTML = `
+                    <h3>${project.name}</h3>
+                    <p><strong>Client:</strong> ${project.client}</p>
+                    <p><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: bold;">${project.status}</span></p>
+                    <p><strong>Value:</strong> $${project.value.toLocaleString()}</p>
+                    <p><strong>Completion:</strong> ${project.completion}%</p>
+                `;
+                projectsList.appendChild(projectCard);
+            });
+            
+            projectsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showDashboard() {
+            document.querySelector('.stats-grid').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Check if already installed
+        if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+            showStatus('🏠 App running in native mode!', 'success');
+            installBtn.innerHTML = '✅ Already Installed';
+            installBtn.disabled = true;
+        } else {
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(() => showStatus('🔧 Ready for installation', 'success'))
+                    .catch(() => console.log('SW registration failed'));
+            }
+        }
+
+        // iOS detection
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOS && !window.navigator.standalone) {
+            showStatus('📱 iOS: Use Safari for best installation experience', 'info');
+        }
+    </script>
+</body>
+</html>
