@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REMC Project Management</title>
-    
-    <!-- PWA Meta Tags -->
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#1a472a">
+    <title>REMC EARTHMOVING - Project Management</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#dc2626">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="REMC">
-    <link rel="apple-touch-icon" href="/icon-192.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="REMC EARTHMOVING">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <meta name="description" content="REMC EARTHMOVING Project Management System - Manage your commercial and residential projects, quotes, and client relationships.">
     
     <style>
         * {
@@ -19,406 +18,774 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a472a, #2d5a3d);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #2c2c2c, #1a1a1a);
             color: white;
             min-height: 100vh;
+            line-height: 1.6;
         }
-        
-        .navbar {
-            background: rgba(0,0,0,0.2);
-            padding: 15px 20px;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .navbar h1 {
-            color: #ffd700;
-            font-size: 1.5em;
-        }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px;
         }
-        
-        .hero {
-            text-align: center;
-            padding: 60px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            margin-bottom: 40px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .hero h1 {
-            color: #ffd700;
-            font-size: 3em;
-            margin-bottom: 20px;
-        }
-        
-        .hero p {
-            font-size: 1.2em;
+
+        header {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            padding: 20px 0;
             margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .header-content {
+            text-align: center;
+        }
+
+        .header-content h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header-content p {
+            font-size: 1.2em;
             opacity: 0.9;
         }
-        
-        .install-section {
-            background: rgba(255, 215, 0, 0.1);
-            border: 2px solid #ffd700;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 30px 0;
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-section {
             text-align: center;
+            margin: 40px 0 60px 0;
         }
-        
-        .install-btn {
-            background: #ffd700;
-            color: #1a472a;
-            padding: 18px 40px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.3em;
-            font-weight: bold;
+
+        .welcome-section h2 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            color: #dc2626;
+        }
+
+        .welcome-section p {
+            font-size: 1.2em;
+            color: #ccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .division-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .division-btn {
+            background: linear-gradient(135deg, #374151, #1f2937);
+            border: 2px solid #4b5563;
+            border-radius: 15px;
+            padding: 40px 30px;
+            width: 300px;
             cursor: pointer;
-            margin: 10px;
             transition: all 0.3s ease;
-            display: inline-block;
-            text-decoration: none;
-        }
-        
-        .install-btn:hover {
-            background: #ffed4e;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-        
-        .nav-btn {
-            background: #28a745;
+            text-align: center;
             color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
+            font-size: inherit;
+        }
+
+        .division-btn:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            border-color: #dc2626;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-icon {
+            font-size: 3em;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .btn-title {
+            font-size: 1.5em;
             font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .btn-desc {
+            font-size: 1em;
+            color: #ccc;
+            display: block;
+            line-height: 1.4;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #dc2626;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #4b5563, #374151);
+            color: white;
+            border: 1px solid #6b7280;
+            border-radius: 8px;
+            padding: 10px 20px;
             cursor: pointer;
-            margin: 10px;
             transition: all 0.3s ease;
-            display: inline-block;
-            text-decoration: none;
+            font-size: 1em;
         }
-        
-        .nav-btn:hover {
-            background: #218838;
-            transform: translateY(-2px);
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, #374151, #1f2937);
+            transform: translateX(-3px);
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            margin: 40px 0;
+            gap: 20px;
+            margin: 30px 0;
         }
-        
+
         .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
+            background: linear-gradient(135deg, #374151, #1f2937);
+            border: 1px solid #4b5563;
             border-radius: 15px;
+            padding: 25px;
             text-align: center;
-            backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
-        
+
         .stat-card:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-5px);
+            background: linear-gradient(135deg, #4b5563, #374151);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
-        
+
+        .stat-card h3 {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #dc2626;
+        }
+
         .stat-number {
             font-size: 2.5em;
             font-weight: bold;
-            color: #ffd700;
-            margin-bottom: 10px;
+            color: white;
         }
         
-        .features {
+        .projects-section {
+            margin: 30px 0;
+        }
+        
+        .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin: 40px 0;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
         
-        .feature-card {
+        .project-card {
             background: rgba(255, 255, 255, 0.1);
-            padding: 25px;
-            border-radius: 15px;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             backdrop-filter: blur(10px);
         }
         
-        .feature-card h3 {
-            color: #ffd700;
-            margin-bottom: 15px;
-            font-size: 1.3em;
+        .project-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: #dc2626;
         }
         
-        .status {
-            margin: 20px 0;
-            padding: 15px;
+        .project-card h4 {
+            margin: 0 0 15px 0;
+            font-size: 1.2em;
+        }
+        
+        .project-card p {
+            margin: 8px 0;
+            font-size: 0.95em;
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
-            text-align: center;
+            height: 8px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .quick-actions {
+            margin: 40px 0;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            color: white;
+            border: 1px solid #718096;
+            border-radius: 8px;
+            padding: 15px 20px;
+            font-size: 1em;
             font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
         }
         
-        .success { background: rgba(40, 167, 69, 0.3); color: #28a745; }
-        .warning { background: rgba(255, 193, 7, 0.3); color: #ffc107; }
-        .info { background: rgba(23, 162, 184, 0.3); color: #17a2b8; }
+        .action-btn:hover {
+            background: linear-gradient(135deg, #2d3748, #1a202c);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
         
-        .manual-install {
-            background: rgba(0,0,0,0.3);
-            padding: 25px;
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+            border: 2px solid #dc2626;
             border-radius: 15px;
-            margin-top: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         
-        .platform {
-            margin: 20px 0;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(220, 38, 38, 0.3);
         }
         
-        .platform strong {
-            color: #ffd700;
-            font-size: 1.1em;
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.5em;
         }
         
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .project-details p {
+            margin: 10px 0;
+            font-size: 1em;
+        }
+        
+        .project-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2em; }
-            .container { padding: 10px; }
-            .install-btn { width: 100%; margin: 5px 0; }
-            .nav-btn { width: 100%; margin: 5px 0; }
+            .division-buttons {
+                flex-direction: column;
+            }
+            
+            .division-btn {
+                margin: 10px 0;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .modal-content {
+                width: 95%;
+                max-height: 90vh;
+            }
+            
+            .modal-header h3 {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-card {
+                padding: 15px;
+            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <h1>🏗️ REMC Project Management</h1>
-    </nav>
-    
+    <!-- Install Button (initially hidden) -->
+    <button id="installBtn" style="display: none; position: fixed; top: 20px; right: 20px; background: #dc2626; color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer; z-index: 1000;">Install REMC App</button>
+
     <div class="container">
-        <div class="hero">
-            <h1>Welcome to REMC</h1>
-            <p>Professional Construction & Earthmoving Project Management</p>
-            <div id="status"></div>
-        </div>
-        
-        <div class="install-section">
-            <h2 style="color: #ffd700; margin-bottom: 20px;">📱 Install as Native App</h2>
-            <p style="margin-bottom: 20px;">Get the full app experience on your device!</p>
-            
-            <button id="installBtn" class="install-btn" onclick="installApp()">
-                📱 Install REMC App
-            </button>
-            
-            <br>
-            
-            <a href="#projects" class="nav-btn" onclick="showProjects()">
-                📋 View Projects
-            </a>
-            
-            <a href="#dashboard" class="nav-btn" onclick="showDashboard()">
-                📊 Dashboard
-            </a>
-        </div>
-        
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">3</div>
-                <div>Active Projects</div>
+        <header>
+            <div class="header-content">
+                <h1>🏗️ REMC EARTHMOVING</h1>
+                <p>Project Management System</p>
             </div>
-            <div class="stat-card">
-                <div class="stat-number">$1.38M</div>
-                <div>Total Project Value</div>
+        </header>
+
+        <!-- Home/Selection Screen -->
+        <div id="homeScreen" class="screen active">
+            <div class="welcome-section">
+                <h2>Welcome to REMC Project Management</h2>
+                <p>Select your business division to access projects, quotes, and management tools</p>
             </div>
-            <div class="stat-card">
-                <div class="stat-number">2</div>
-                <div>Completed This Month</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">60</div>
-                <div>Team Members</div>
+            
+            <div class="division-buttons">
+                <button class="division-btn" onclick="showCommercialDashboard()">
+                    <span class="btn-icon">🏢</span>
+                    <span class="btn-title">Commercial</span>
+                    <span class="btn-desc">Large scale projects, earthmoving, commercial developments</span>
+                </button>
+                
+                <button class="division-btn" onclick="showResidentialDashboard()">
+                    <span class="btn-icon">🏠</span>
+                    <span class="btn-title">Residential</span>
+                    <span class="btn-desc">Home improvements, residential earthworks, landscaping</span>
+                </button>
             </div>
         </div>
-        
-        <div class="features">
-            <div class="feature-card">
-                <h3>📋 Project Management</h3>
-                <p>Track construction projects from quote to completion with comprehensive project oversight.</p>
+
+        <!-- Commercial Dashboard -->
+        <div id="commercialDashboard" class="screen">
+            <div class="section-header">
+                <h2>🏢 Commercial Division</h2>
+                <button onclick="showHome()" class="back-btn">← Back to Home</button>
             </div>
-            <div class="feature-card">
-                <h3>💰 Financial Tracking</h3>
-                <p>Monitor project costs, quotes, and profitability in real-time.</p>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Active Projects</h3>
+                    <div class="stat-number">8</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Value</h3>
+                    <div class="stat-number">$2.4M</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Completion Rate</h3>
+                    <div class="stat-number">78%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>This Month</h3>
+                    <div class="stat-number">$420K</div>
+                </div>
             </div>
-            <div class="feature-card">
-                <h3>👥 Team Collaboration</h3>
-                <p>Keep your entire team connected and informed on project progress.</p>
+            
+            <!-- Projects Section -->
+            <div class="projects-section">
+                <h3>Current Projects</h3>
+                <div class="projects-grid" id="commercialProjects">
+                    <!-- Projects will be loaded here -->
+                </div>
             </div>
-            <div class="feature-card">
-                <h3>📱 Mobile Access</h3>
-                <p>Access your projects anywhere with our native mobile app experience.</p>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="showQuoteForm('commercial')">New Quote</button>
+                    <button class="action-btn" onclick="showReports('commercial')">View Reports</button>
+                    <button class="action-btn" onclick="showSchedule('commercial')">Schedule</button>
+                    <button class="action-btn" onclick="showClients('commercial')">Manage Clients</button>
+                </div>
             </div>
         </div>
-        
-        <div id="projects-section" style="display: none;">
-            <h2 style="color: #ffd700; margin: 30px 0;">Current Projects</h2>
-            <div id="projects-list"></div>
+
+        <!-- Residential Dashboard -->
+        <div id="residentialDashboard" class="screen">
+            <div class="section-header">
+                <h2>🏠 Residential Division</h2>
+                <button onclick="showHome()" class="back-btn">← Back to Home</button>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Active Projects</h3>
+                    <div class="stat-number">12</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Value</h3>
+                    <div class="stat-number">$890K</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Completion Rate</h3>
+                    <div class="stat-number">85%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>This Month</h3>
+                    <div class="stat-number">$156K</div>
+                </div>
+            </div>
+            
+            <!-- Projects Section -->
+            <div class="projects-section">
+                <h3>Current Projects</h3>
+                <div class="projects-grid" id="residentialProjects">
+                    <!-- Projects will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="showQuoteForm('residential')">New Quote</button>
+                    <button class="action-btn" onclick="showReports('residential')">View Reports</button>
+                    <button class="action-btn" onclick="showSchedule('residential')">Schedule</button>
+                    <button class="action-btn" onclick="showClients('residential')">Manage Clients</button>
+                </div>
+            </div>
         </div>
-        
-        <div class="manual-install">
-            <h3 style="color: #ffd700; margin-bottom: 20px;">📋 Manual Installation Instructions</h3>
-            
-            <div class="platform">
-                <strong>📱 iPhone/iPad (Safari):</strong><br>
-                1. Tap the Share button (□↗) at the bottom<br>
-                2. Scroll down and tap "Add to Home Screen"<br>
-                3. Tap "Add" to confirm<br>
-                4. ✅ App appears on your home screen!
+    </div>
+
+    <!-- Modal for project details -->
+    <div id="projectModal" class="modal" style="display: none;" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="modalTitle">Project Details</h3>
+                <button onclick="closeModal()" style="background: none; border: none; color: white; font-size: 1.5em; cursor: pointer;">×</button>
             </div>
-            
-            <div class="platform">
-                <strong>🤖 Android (Chrome):</strong><br>
-                1. Tap the menu button (⋮) in top right<br>
-                2. Tap "Add to Home Screen" or "Install App"<br>
-                3. Tap "Add" or "Install"<br>
-                4. ✅ App installs like from Google Play!
-            </div>
-            
-            <div class="platform">
-                <strong>💻 Desktop (Chrome/Edge):</strong><br>
-                1. Look for install icon in address bar<br>
-                2. Or use menu → "Install REMC App"<br>
-                3. Click "Install"<br>
-                4. ✅ App added to desktop!
+            <div class="modal-body" id="modalBody">
+                <!-- Project details will be loaded here -->
             </div>
         </div>
     </div>
 
     <script>
-        // Sample project data
-        const projects = [
-            {
-                id: "REMC-001",
-                name: "Highway Construction Phase 1",
-                client: "City Council",
-                status: "In Progress",
-                value: 450000,
-                completion: 65
-            },
-            {
-                id: "REMC-002", 
-                name: "Shopping Center Development",
-                client: "Retail Group Ltd",
-                status: "Quoted",
-                value: 280000,
-                completion: 15
-            },
-            {
-                id: "REMC-003",
-                name: "Residential Subdivision",
-                client: "Housing Corp", 
-                status: "Completed",
-                value: 650000,
-                completion: 100
-            }
-        ];
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
 
-        // PWA Installation
+        // PWA Install functionality
         let deferredPrompt;
-        const installBtn = document.getElementById('installBtn');
-        const status = document.getElementById('status');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
+            const installBtn = document.getElementById('installBtn');
             installBtn.style.display = 'block';
-            showStatus('✅ App ready for installation!', 'success');
         });
 
-        window.addEventListener('appinstalled', () => {
-            showStatus('🎉 App installed successfully! Check your home screen!', 'success');
-            installBtn.style.display = 'none';
-        });
-
-        function installApp() {
+        document.getElementById('installBtn').addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        showStatus('📥 Installing app...', 'warning');
-                    }
-                    deferredPrompt = null;
-                });
-            } else {
-                showStatus('📋 Use manual installation instructions below', 'info');
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                deferredPrompt = null;
+                document.getElementById('installBtn').style.display = 'none';
+            }
+        });
+
+        // Commercial Projects Data
+        const commercialProjects = [
+            {
+                id: 1,
+                name: "Westfield Shopping Centre Expansion",
+                client: "Westfield Corporation",
+                status: "In Progress",
+                progress: 65,
+                value: "$580,000",
+                startDate: "2024-08-15",
+                endDate: "2024-12-20",
+                description: "Major earthmoving and site preparation for shopping centre expansion including excavation, grading, and drainage installation.",
+                manager: "John Smith",
+                location: "Brisbane CBD"
+            },
+            {
+                id: 2,
+                name: "Industrial Estate Development",
+                client: "Metro Developments",
+                status: "Planning",
+                progress: 25,
+                value: "$720,000",
+                startDate: "2024-11-01",
+                endDate: "2025-04-30",
+                description: "Complete site preparation for new industrial estate including road construction, utilities installation, and landscaping.",
+                manager: "Sarah Johnson",
+                location: "Ipswich QLD"
+            },
+            {
+                id: 3,
+                name: "Highway Interchange Upgrade",
+                client: "QLD Transport",
+                status: "In Progress",
+                progress: 40,
+                value: "$1,200,000",
+                startDate: "2024-07-01",
+                endDate: "2025-02-28",
+                description: "Major highway infrastructure upgrade including earthworks, retaining walls, and drainage systems.",
+                manager: "Mike Wilson",
+                location: "Gold Coast Highway"
+            }
+        ];
+
+        // Residential Projects Data
+        const residentialProjects = [
+            {
+                id: 4,
+                name: "Thompson Family Pool Installation",
+                client: "Thompson Family",
+                status: "In Progress",
+                progress: 80,
+                value: "$45,000",
+                startDate: "2024-09-01",
+                endDate: "2024-10-15",
+                description: "Complete pool excavation, concrete placement, and landscape restoration for luxury residential pool.",
+                manager: "David Brown",
+                location: "Paddington QLD"
+            },
+            {
+                id: 5,
+                name: "Heritage Home Foundation Repair",
+                client: "Mitchell Estate",
+                status: "Completed",
+                progress: 100,
+                value: "$28,000",
+                startDate: "2024-08-01",
+                endDate: "2024-09-15",
+                description: "Foundation underpinning and soil stabilization for heritage-listed residential property.",
+                manager: "Lisa Chen",
+                location: "New Farm QLD"
+            },
+            {
+                id: 6,
+                name: "Suburban Subdivision Prep",
+                client: "Green Valley Homes",
+                status: "In Progress",
+                progress: 55,
+                value: "$185,000",
+                startDate: "2024-09-15",
+                endDate: "2024-12-10",
+                description: "Site preparation for 12-lot residential subdivision including roads, drainage, and utilities.",
+                manager: "Tom Anderson",
+                location: "Springfield QLD"
+            }
+        ];
+
+        // Helper Functions
+        function getStatusColor(status) {
+            switch(status.toLowerCase()) {
+                case 'completed': return '#22c55e';
+                case 'in progress': return '#3b82f6';
+                case 'planning': return '#f59e0b';
+                case 'on hold': return '#ef4444';
+                default: return '#6b7280';
             }
         }
 
-        function showStatus(message, type) {
-            status.innerHTML = `<div class="status ${type}">${message}</div>`;
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-AU', {
+                style: 'currency',
+                currency: 'AUD'
+            }).format(amount.replace(/[^0-9.-]+/g, ''));
         }
 
-        function showProjects() {
-            const projectsSection = document.getElementById('projects-section');
-            const projectsList = document.getElementById('projects-list');
-            
-            projectsSection.style.display = 'block';
-            projectsList.innerHTML = '';
-            
-            projects.forEach(project => {
-                const statusColor = project.status === 'Completed' ? '#28a745' : 
-                                  project.status === 'In Progress' ? '#ffc107' : '#17a2b8';
-                
-                const projectCard = document.createElement('div');
-                projectCard.className = 'feature-card';
-                projectCard.innerHTML = `
-                    <h3>${project.name}</h3>
-                    <p><strong>Client:</strong> ${project.client}</p>
-                    <p><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: bold;">${project.status}</span></p>
-                    <p><strong>Value:</strong> $${project.value.toLocaleString()}</p>
-                    <p><strong>Completion:</strong> ${project.completion}%</p>
-                `;
-                projectsList.appendChild(projectCard);
+        // Navigation Functions
+        function showHome() {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
             });
+            document.getElementById('homeScreen').classList.add('active');
+        }
+
+        function showCommercialDashboard() {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById('commercialDashboard').classList.add('active');
+            loadProjects('commercial');
+        }
+
+        function showResidentialDashboard() {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById('residentialDashboard').classList.add('active');
+            loadProjects('residential');
+        }
+
+        function loadProjects(division) {
+            const projects = division === 'commercial' ? commercialProjects : residentialProjects;
+            const container = document.getElementById(division + 'Projects');
             
-            projectsSection.scrollIntoView({ behavior: 'smooth' });
+            container.innerHTML = projects.map(project => `
+                <div class="project-card" onclick="showProjectDetail(${project.id}, '${division}')">
+                    <h4>${project.name}</h4>
+                    <p><strong>Client:</strong> ${project.client}</p>
+                    <p><strong>Status:</strong> <span style="color: ${getStatusColor(project.status)}">${project.status}</span></p>
+                    <p><strong>Value:</strong> ${project.value}</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${project.progress}%; background: ${getStatusColor(project.status)}"></div>
+                    </div>
+                    <p style="font-size: 0.9em; color: #ccc;">${project.progress}% Complete</p>
+                </div>
+            `).join('');
         }
 
-        function showDashboard() {
-            document.querySelector('.stats-grid').scrollIntoView({ behavior: 'smooth' });
+        function showProjectDetail(projectId, division) {
+            const projects = division === 'commercial' ? commercialProjects : residentialProjects;
+            const project = projects.find(p => p.id === projectId);
+            
+            if (!project) return;
+            
+            document.getElementById('modalTitle').textContent = project.name;
+            document.getElementById('modalBody').innerHTML = `
+                <div class="project-details">
+                    <p><strong>Client:</strong> ${project.client}</p>
+                    <p><strong>Project Manager:</strong> ${project.manager}</p>
+                    <p><strong>Location:</strong> ${project.location}</p>
+                    <p><strong>Status:</strong> <span style="color: ${getStatusColor(project.status)}">${project.status}</span></p>
+                    <p><strong>Value:</strong> ${project.value}</p>
+                    <p><strong>Start Date:</strong> ${new Date(project.startDate).toLocaleDateString()}</p>
+                    <p><strong>End Date:</strong> ${new Date(project.endDate).toLocaleDateString()}</p>
+                    <p><strong>Progress:</strong> ${project.progress}%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${project.progress}%; background: ${getStatusColor(project.status)}"></div>
+                    </div>
+                    <p><strong>Description:</strong></p>
+                    <p style="color: #ccc; line-height: 1.6;">${project.description}</p>
+                    
+                    <div class="project-actions">
+                        <button class="action-btn" onclick="updateProject(${project.id})">Update Progress</button>
+                        <button class="action-btn" onclick="viewDocuments(${project.id})">Documents</button>
+                        <button class="action-btn" onclick="contactClient('${project.client}')">Contact Client</button>
+                        <button class="action-btn" onclick="generateReport(${project.id})">Generate Report</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('projectModal').style.display = 'flex';
         }
 
-        // Check if already installed
-        if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
-            showStatus('🏠 App running in native mode!', 'success');
-            installBtn.innerHTML = '✅ Already Installed';
-            installBtn.disabled = true;
-        } else {
-            // Register service worker
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(() => showStatus('🔧 Ready for installation', 'success'))
-                    .catch(() => console.log('SW registration failed'));
+        function closeModal(event) {
+            if (!event || event.target === document.getElementById('projectModal')) {
+                document.getElementById('projectModal').style.display = 'none';
             }
         }
 
-        // iOS detection
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        if (isIOS && !window.navigator.standalone) {
-            showStatus('📱 iOS: Use Safari for best installation experience', 'info');
+        // Quick Action Functions
+        function showQuoteForm(division) {
+            alert(`Opening ${division} quote form...`);
+            // This would open a quote creation form
         }
+
+        function showReports(division) {
+            alert(`Loading ${division} reports...`);
+            // This would show division-specific reports
+        }
+
+        function showSchedule(division) {
+            alert(`Opening ${division} schedule...`);
+            // This would show project schedules
+        }
+
+        function showClients(division) {
+            alert(`Managing ${division} clients...`);
+            // This would show client management interface
+        }
+
+        // Project Action Functions
+        function updateProject(projectId) {
+            alert(`Opening update form for project ${projectId}...`);
+            closeModal();
+        }
+
+        function viewDocuments(projectId) {
+            alert(`Loading documents for project ${projectId}...`);
+            closeModal();
+        }
+
+        function contactClient(clientName) {
+            alert(`Opening contact info for ${clientName}...`);
+            closeModal();
+        }
+
+        function generateReport(projectId) {
+            alert(`Generating report for project ${projectId}...`);
+            closeModal();
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            showHome();
+        });
     </script>
 </body>
 </html>
