@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+
+{% block title %}Help - REMC{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-question-circle"></i> Help & Documentation
+        </h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 col-12">
+        <!-- Getting Started -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-rocket"></i> Getting Started</h5>
+            </div>
+            <div class="card-body">
+                <p>Welcome to the REMC Web Application! This web-based version allows you to access your project management system from any device with a web browser, including iOS devices.</p>
+                
+                <h6>Key Features:</h6>
+                <ul>
+                    <li><strong>Cross-Platform:</strong> Works on iOS, Android, Windows, Mac, and any device with a web browser</li>
+                    <li><strong>Responsive Design:</strong> Optimized for mobile devices and tablets</li>
+                    <li><strong>Real-time Data:</strong> Access to all your projects and email tracking data</li>
+                    <li><strong>Touch-Friendly:</strong> Designed for touchscreen interaction</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Navigation Guide -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-compass"></i> Navigation Guide</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h6><i class="fas fa-tachometer-alt text-primary"></i> Dashboard</h6>
+                        <p class="small text-muted">Overview of all project statistics, quick search, and recent projects. Your main starting point.</p>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <h6><i class="fas fa-folder-open text-primary"></i> Projects</h6>
+                        <p class="small text-muted">Browse all projects with search and filter capabilities. Switch between list and grid views.</p>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <h6><i class="fas fa-envelope text-primary"></i> Email Tracking</h6>
+                        <p class="small text-muted">View all tracked emails with advanced filtering by project, date, and content.</p>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <h6><i class="fas fa-eye text-primary"></i> Project Details</h6>
+                        <p class="small text-muted">Detailed view of individual projects including all related emails and attachments.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Tips -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-mobile-alt"></i> Mobile & iOS Tips</h5>
+            </div>
+            <div class="card-body">
+                <h6>For iOS Devices:</h6>
+                <ul>
+                    <li><strong>Add to Home Screen:</strong> In Safari, tap the share button and select "Add to Home Screen" for app-like experience</li>
+                    <li><strong>Full Screen:</strong> The web app will run in full-screen mode when added to home screen</li>
+                    <li><strong>Touch Navigation:</strong> Swipe and tap gestures work throughout the interface</li>
+                    <li><strong>Search:</strong> Use the search boxes to quickly find projects and emails</li>
+                </ul>
+                
+                <h6>Performance Tips:</h6>
+                <ul>
+                    <li>Close other browser tabs for better performance</li>
+                    <li>Refresh the page if data seems outdated</li>
+                    <li>Use Wi-Fi for faster loading of large project lists</li>
+                    <li>The app works offline for recently viewed content</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Features Guide -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-tools"></i> Features Guide</h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="featuresAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#searchFeature">
+                                <i class="fas fa-search me-2"></i> Search Functionality
+                            </button>
+                        </h2>
+                        <div id="searchFeature" class="accordion-collapse collapse" data-bs-parent="#featuresAccordion">
+                            <div class="accordion-body">
+                                <p>Search across projects and emails using various criteria:</p>
+                                <ul>
+                                    <li>Project names, IDs, and descriptions</li>
+                                    <li>Client names and locations</li>
+                                    <li>Email subjects and content</li>
+                                    <li>Sender names and addresses</li>
+                                </ul>
+                                <p>Search results update in real-time as you type.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#emailFeature">
+                                <i class="fas fa-envelope me-2"></i> Email Tracking
+                            </button>
+                        </h2>
+                        <div id="emailFeature" class="accordion-collapse collapse" data-bs-parent="#featuresAccordion">
+                            <div class="accordion-body">
+                                <p>Email tracking features include:</p>
+                                <ul>
+                                    <li>View all emails associated with projects</li>
+                                    <li>Filter by project, date, or content</li>
+                                    <li>View email attachments and details</li>
+                                    <li>Track both received and sent emails</li>
+                                </ul>
+                                <p><strong>Note:</strong> Email tracking requires the desktop Outlook integration to be set up.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#projectFeature">
+                                <i class="fas fa-folder-open me-2"></i> Project Management
+                            </button>
+                        </h2>
+                        <div id="projectFeature" class="accordion-collapse collapse" data-bs-parent="#featuresAccordion">
+                            <div class="accordion-body">
+                                <p>Project management capabilities:</p>
+                                <ul>
+                                    <li>View residential and commercial projects</li>
+                                    <li>Browse project details and statistics</li>
+                                    <li>Switch between list and grid view modes</li>
+                                    <li>Filter projects by type and status</li>
+                                    <li>Access project-specific email communications</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Links Sidebar -->
+    <div class="col-lg-4 col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-external-link-alt"></i> Quick Links</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                    </a>
+                    <a href="{{ url_for('projects') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-folder-open"></i> Browse Projects
+                    </a>
+                    <a href="{{ url_for('emails') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-envelope"></i> Email Tracking
+                    </a>
+                    <a href="{{ url_for('settings') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Information -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> System Information</h5>
+            </div>
+            <div class="card-body">
+                <p class="small">
+                    <strong>REMC Web Application</strong><br>
+                    Version: 1.0.0<br>
+                    Platform: Web-based<br>
+                    Compatible: iOS, Android, Desktop
+                </p>
+                
+                <p class="small text-muted">
+                    This application provides web-based access to your REMC project management system, enabling you to manage projects and track emails from any device.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Support Contact -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-life-ring"></i> Need Help?</h5>
+            </div>
+            <div class="card-body">
+                <p class="small">
+                    If you encounter any issues or need additional assistance:
+                </p>
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-info btn-sm" onclick="showTechnicalInfo()">
+                        <i class="fas fa-bug"></i> Report Issue
+                    </button>
+                    <button class="btn btn-outline-success btn-sm" onclick="refreshApp()">
+                        <i class="fas fa-sync-alt"></i> Refresh App
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function showTechnicalInfo() {
+        const info = `
+Browser: ${navigator.userAgent}
+Screen: ${screen.width}x${screen.height}
+Viewport: ${window.innerWidth}x${window.innerHeight}
+Platform: ${navigator.platform}
+Language: ${navigator.language}
+Online: ${navigator.onLine}
+        `;
+        
+        alert('Technical Information:\n' + info);
+    }
+    
+    function refreshApp() {
+        if (confirm('This will refresh the application. Continue?')) {
+            window.location.reload();
+        }
+    }
+    
+    // Add some helpful keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + K for search
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            window.location.href = '{{ url_for("projects") }}';
+        }
+        
+        // Ctrl/Cmd + H for home
+        if ((e.ctrlKey || e.metaKey) && e.key === 'h') {
+            e.preventDefault();
+            window.location.href = '{{ url_for("index") }}';
+        }
+    });
+</script>
+{% endblock %}

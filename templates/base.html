@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>{% block title %}REMC - Project Management{% endblock %}</title>
+    
+    <!-- PWA Meta Tags for Native App Experience -->
+    <meta name="application-name" content="REMC">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="REMC">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a472a">
+    <meta name="msapplication-TileColor" content="#1a472a">
+    
+    <!-- iOS Specific for Native App Feel -->
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-orientations" content="portrait">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- Windows/Edge -->
+    <meta name="msapplication-starturl" content="/">
+    <meta name="msapplication-tap-highlight" content="no">
+    
+    <!-- Prevent zoom and make it feel native -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/static/manifest.json">
+    
+    <!-- Apple Touch Icons for all sizes -->
+    <link rel="apple-touch-icon" href="/static/icon-192.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icon-192.svg">
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/icon-192.svg">
+    <link rel="apple-touch-icon" sizes="144x144" href="/static/icon-192.svg">
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/icon-192.svg">
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/icon-192.svg">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/icon-192.svg">
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/icon-192.svg">
+    <link rel="apple-touch-icon" sizes="60x60" href="/static/icon-192.svg">
+    <link rel="apple-touch-icon" sizes="57x57" href="/static/icon-192.svg">
+    
+    <!-- Favicon for all platforms -->
+    <link rel="icon" type="image/svg+xml" href="/static/icon-192.svg">
+    <link rel="shortcut icon" href="/static/icon-192.svg">
+    <link rel="mask-icon" href="/static/icon-192.svg" color="#1a472a">
+    
+    <!-- Bootstrap CSS for responsive design -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --remc-primary: #1a472a;
+            --remc-secondary: #2d5a3d;
+            --remc-accent: #ffd700;
+            --remc-light: #f8f9fa;
+            --remc-dark: #212529;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background-color: var(--remc-light);
+            margin: 0;
+            padding: 0;
+            /* Native app feel */
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
+            /* Smooth scrolling like native apps */
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+        
+        /* Remove browser default styles for native feel */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        
+        /* Safe area support for iPhone with notch */
+        .container-fluid, .container {
+            padding-left: max(15px, env(safe-area-inset-left));
+            padding-right: max(15px, env(safe-area-inset-right));
+        }
+        
+        /* Status bar spacing for standalone mode */
+        .navbar {
+            padding-top: max(0.5rem, env(safe-area-inset-top));
+        }
+        
+        /* Native app animations */
+        .btn, .card, .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .btn:active, .card:active, .nav-link:active {
+            transform: scale(0.98);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--remc-accent) !important;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--remc-primary), var(--remc-secondary)) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-nav .nav-link {
+            color: white !important;
+            margin: 0 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .navbar-nav .nav-link.active {
+            background-color: var(--remc-accent);
+            color: var(--remc-dark) !important;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--remc-primary), var(--remc-secondary));
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--remc-primary), var(--remc-secondary));
+            border: none;
+            border-radius: 5px;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--remc-secondary), var(--remc-primary));
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stats-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .project-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .project-type {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .project-type.residential {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .project-type.commercial {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .email-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--remc-primary);
+        }
+        
+        .search-box {
+            border-radius: 25px;
+            border: 2px solid #e0e0e0;
+            padding: 10px 20px;
+            transition: border-color 0.3s;
+        }
+        
+        .search-box:focus {
+            border-color: var(--remc-primary);
+            box-shadow: 0 0 0 0.2rem rgba(26, 71, 42, 0.25);
+        }
+        
+        .mobile-optimized {
+            padding: 10px;
+        }
+        
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+            
+            .stats-number {
+                font-size: 2rem;
+            }
+            
+            .card {
+                margin-bottom: 15px;
+            }
+            
+            .mobile-optimized {
+                padding: 5px;
+            }
+            
+            .project-card {
+                padding: 10px;
+            }
+        }
+        
+        /* iOS Safari specific styles */
+        @supports (-webkit-touch-callout: none) {
+            .search-box {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+            
+            body {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            /* Hide Safari UI when in standalone mode */
+            @media all and (display-mode: standalone) {
+                body {
+                    padding-top: env(safe-area-inset-top);
+                    padding-bottom: env(safe-area-inset-bottom);
+                }
+                
+                .navbar {
+                    padding-top: calc(env(safe-area-inset-top) + 10px);
+                }
+            }
+        }
+        
+        /* PWA Standalone mode styles */
+        @media all and (display-mode: standalone) {
+            body {
+                background-color: var(--remc-light);
+                overflow-x: hidden;
+            }
+            
+            .navbar {
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+            
+            /* Full-screen app experience */
+            .container {
+                padding-bottom: 80px; /* Space for floating buttons */
+            }
+        }
+        
+        /* Status bar overlay for iOS */
+        .status-bar-overlay {
+            height: env(safe-area-inset-top);
+            background: var(--remc-primary);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1001;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner-border {
+            color: var(--remc-primary);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Status bar overlay for iOS standalone mode -->
+    <div class="status-bar-overlay d-none" id="status-bar-overlay"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-hard-hat"></i> REMC
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="{{ url_for('index') }}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'projects' }}" href="{{ url_for('projects') }}">
+                            <i class="fas fa-folder-open"></i> Projects
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'emails' }}" href="{{ url_for('emails') }}">
+                            <i class="fas fa-envelope"></i> Email Tracking
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('help_page') }}">
+                            <i class="fas fa-question-circle"></i> Help
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('settings') }}">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container mt-4 mobile-optimized">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Native app experience initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Detect if running as standalone PWA
+            const isStandalone = window.navigator.standalone || 
+                                window.matchMedia('(display-mode: standalone)').matches ||
+                                window.matchMedia('(display-mode: fullscreen)').matches;
+            
+            if (isStandalone) {
+                console.log('REMC: Running in standalone mode (native app)');
+                document.body.classList.add('standalone-mode');
+                
+                // Show status bar overlay for iOS
+                const statusBar = document.getElementById('status-bar-overlay');
+                if (statusBar && navigator.userAgent.includes('iPhone')) {
+                    statusBar.classList.remove('d-none');
+                }
+                
+                // Prevent default browser behaviors for native feel
+                document.addEventListener('touchstart', function(e) {
+                    if (e.touches.length > 1) {
+                        e.preventDefault(); // Prevent pinch zoom
+                    }
+                });
+                
+                // Prevent context menu on long press
+                document.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                });
+                
+                // Add native app animations
+                document.querySelectorAll('.btn, .card, .list-group-item').forEach(element => {
+                    element.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.98)';
+                    });
+                    element.addEventListener('touchend', function() {
+                        this.style.transform = 'scale(1)';
+                    });
+                });
+            }
+        });
+        
+        // Enhanced PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(function(registration) {
+                        console.log('REMC: Service Worker registered successfully');
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', function() {
+                            console.log('REMC: New version available');
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', function() {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Show update notification
+                                    showUpdateNotification();
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(err) {
+                        console.log('REMC: Service Worker registration failed: ', err);
+                    });
+            });
+        }
+        
+        function showUpdateNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-info alert-dismissible fade show position-fixed';
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+            notification.innerHTML = `
+                <strong>Update Available!</strong> A new version of REMC is ready.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div class="mt-2">
+                    <button class="btn btn-sm btn-primary" onclick="updateApp()">Update Now</button>
+                </div>
+            `;
+            document.body.appendChild(notification);
+        }
+        
+        function updateApp() {
+            window.location.reload();
+        }
+        
+        // PWA Install Prompt
+        let deferredPrompt;
+        let installPromptShown = localStorage.getItem('pwaInstallPromptShown');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('PWA install prompt triggered');
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show custom install prompt if not shown before
+            if (!installPromptShown) {
+                showInstallPrompt();
+            }
+        });
+        
+        function showInstallPrompt() {
+            const installBanner = document.createElement('div');
+            installBanner.id = 'pwa-install-banner';
+            installBanner.innerHTML = `
+                <div style="position: fixed; top: 0; left: 0; right: 0; background: linear-gradient(135deg, #1a472a, #2d5a3d); color: white; padding: 15px; text-align: center; z-index: 10000; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+                    <div style="max-width: 400px; margin: 0 auto;">
+                        <h6 style="margin: 0 0 8px 0; font-weight: bold;">📱 Install REMC App</h6>
+                        <p style="margin: 0 0 10px 0; font-size: 14px;">Add REMC to your home screen for quick access and app-like experience!</p>
+                        <div>
+                            <button onclick="installPWA()" style="background: #ffd700; color: #1a472a; border: none; padding: 8px 16px; border-radius: 5px; font-weight: bold; margin-right: 10px;">Install App</button>
+                            <button onclick="dismissInstallPrompt()" style="background: transparent; color: white; border: 1px solid white; padding: 8px 16px; border-radius: 5px;">Maybe Later</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(installBanner);
+        }
+        
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
+                    dismissInstallPrompt();
+                });
+            } else {
+                // Fallback for iOS Safari
+                showIOSInstallInstructions();
+            }
+        }
+        
+        function showIOSInstallInstructions() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            
+            if (isIOS && isSafari) {
+                const instructions = document.createElement('div');
+                instructions.innerHTML = `
+                    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10001; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                        <div style="background: white; padding: 20px; border-radius: 10px; max-width: 350px; text-align: center;">
+                            <h5 style="color: #1a472a; margin-bottom: 15px;">📱 Install REMC App</h5>
+                            <p style="margin-bottom: 15px; color: #333;">To install REMC as an app:</p>
+                            <ol style="text-align: left; color: #333; margin-bottom: 20px;">
+                                <li>Tap the <strong>Share</strong> button (□↗) at the bottom</li>
+                                <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+                                <li>Tap <strong>"Add"</strong> in the top right</li>
+                                <li>REMC will appear on your home screen!</li>
+                            </ol>
+                            <button onclick="this.parentElement.parentElement.remove()" style="background: #1a472a; color: white; border: none; padding: 10px 20px; border-radius: 5px;">Got it!</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(instructions);
+                dismissInstallPrompt();
+            }
+        }
+        
+        function dismissInstallPrompt() {
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner) {
+                banner.remove();
+            }
+            localStorage.setItem('pwaInstallPromptShown', 'true');
+        }
+        
+        // Show install prompt after 3 seconds if not already shown
+        if (!installPromptShown) {
+            setTimeout(() => {
+                if (!document.getElementById('pwa-install-banner') && !deferredPrompt) {
+                    showIOSInstallInstructions();
+                }
+            }, 3000);
+        }
+        
+        // Mobile-friendly touch events
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if running in standalone mode (installed as PWA)
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                                window.navigator.standalone === true;
+            
+            if (isStandalone) {
+                console.log('Running in PWA standalone mode');
+                const statusBar = document.getElementById('status-bar-overlay');
+                if (statusBar) {
+                    statusBar.classList.remove('d-none');
+                }
+                
+                // Add PWA class to body
+                document.body.classList.add('pwa-mode');
+            }
+            
+            // Add touch feedback for cards
+            const cards = document.querySelectorAll('.card, .project-card');
+            cards.forEach(card => {
+                card.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                card.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+            
+            // Auto-hide loading spinners
+            const spinners = document.querySelectorAll('.spinner-border');
+            spinners.forEach(spinner => {
+                setTimeout(() => {
+                    spinner.style.display = 'none';
+                }, 3000);
+            });
+        });
+        
+        // Search functionality
+        function searchProjects(query) {
+            if (query.length > 2) {
+                fetch(`/api/projects/search?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displaySearchResults(data);
+                    })
+                    .catch(error => {
+                        console.error('Search error:', error);
+                    });
+            }
+        }
+        
+        function displaySearchResults(projects) {
+            const resultsContainer = document.getElementById('search-results');
+            if (!resultsContainer) return;
+            
+            resultsContainer.innerHTML = '';
+            
+            projects.forEach(project => {
+                const projectElement = document.createElement('div');
+                projectElement.className = 'list-group-item list-group-item-action';
+                projectElement.innerHTML = `
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">${project.name}</h6>
+                        <small class="project-type ${project.type.toLowerCase()}">${project.type}</small>
+                    </div>
+                    <p class="mb-1">${project.id} - ${project.client}</p>
+                    <small>${project.status}</small>
+                `;
+                projectElement.onclick = () => {
+                    window.location.href = `/project/${project.id}`;
+                };
+                resultsContainer.appendChild(projectElement);
+            });
+        }
+        
+        // Refresh data periodically (useful for real-time updates)
+        function refreshStats() {
+            fetch('/api/stats')
+                .then(response => response.json())
+                .then(data => {
+                    updateStatsDisplay(data);
+                })
+                .catch(error => {
+                    console.error('Stats refresh error:', error);
+                });
+        }
+        
+        function updateStatsDisplay(stats) {
+            const statsElements = {
+                'total-projects': stats.total_projects,
+                'active-projects': stats.active_projects,
+                'total-emails': stats.total_emails,
+                'recent-emails': stats.recent_emails
+            };
+            
+            Object.entries(statsElements).forEach(([id, value]) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = value;
+                }
+            });
+        }
+        
+        // Auto-refresh every 5 minutes
+        setInterval(refreshStats, 300000);
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

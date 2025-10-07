@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}REMC Projects{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-folder-open"></i> Projects
+                <small class="text-muted">({{ projects|length }} total)</small>
+            </h1>
+            <button class="btn btn-outline-primary" onclick="toggleView()">
+                <i class="fas fa-th" id="view-icon"></i> <span id="view-text">Grid View</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter -->
+<div class="row mb-4">
+    <div class="col-lg-8 col-md-12 mb-3">
+        <form method="GET" action="{{ url_for('projects') }}">
+            <div class="input-group">
+                <input type="text" 
+                       class="form-control search-box" 
+                       name="search" 
+                       value="{{ search_query }}"
+                       placeholder="Search projects by name, ID, client, location..." 
+                       autocomplete="off">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                {% if search_query %}
+                <a href="{{ url_for('projects') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-times"></i> Clear
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+    
+    <div class="col-lg-4 col-md-12 mb-3">
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle w-100" 
+                    type="button" 
+                    data-bs-toggle="dropdown">
+                <i class="fas fa-filter"></i> Filter by Type
+            </button>
+            <ul class="dropdown-menu w-100">
+                <li><a class="dropdown-item" href="{{ url_for('projects') }}">All Projects</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('projects') }}?type=residential">Residential Only</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('projects') }}?type=commercial">Commercial Only</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Projects Display -->
+{% if projects %}
+<div id="projects-container">
+    <!-- List View (default) -->
+    <div id="list-view" class="row">
+        {% for project in projects %}
+        <div class="col-12 mb-3">
+            <div class="project-card" onclick="window.location.href='/project/{{ project.id }}'">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-8 col-12">
+                        <div class="d-flex align-items-center mb-2">
+                            <h5 class="mb-0 me-3">{{ project.name or project.id }}</h5>
+                            <span class="project-type {{ project.type.lower() }}">
+                                {{ project.type }}
+                            </span>
+                        </div>
+                        
+                        <p class="mb-1 text-muted">
+                            <i class="fas fa-hashtag"></i> {{ project.id }}
+                        </p>
+                        
+                        <p class="mb-1 text-muted">
+                            <i class="fas fa-user"></i> {{ project.client or 'No client specified' }}
+                        </p>
+                        
+                        {% if project.location %}
+                        <p class="mb-1 text-muted">
+                            <i class="fas fa-map-marker-alt"></i> {{ project.location }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-4 col-12">
+                        {% if project.status %}
+                        <span class="badge bg-secondary mb-2 w-100">{{ project.status }}</span>
+                        {% endif %}
+                        
+                        {% if project.description %}
+                        <small class="text-muted d-block">{{ project.description[:100] }}{{ '...' if project.description|length > 100 }}</small>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-12 col-12 text-end">
+                        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); window.location.href='/project/{{ project.id }}'">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Grid View (hidden by default) -->
+    <div id="grid-view" class="row" style="display: none;">
+        {% for project in projects %}
+        <div class="col-lg-4 col-md-6 col-12 mb-3">
+            <div class="card h-100" onclick="window.location.href='/project/{{ project.id }}'">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">{{ project.name or project.id }}</h6>
+                    <span class="project-type {{ project.type.lower() }}">
+                        {{ project.type }}
+                    </span>
+                </div>
+                
+                <div class="card-body">
+                    <p class="card-text">
+                        <strong>ID:</strong> {{ project.id }}<br>
+                        <strong>Client:</strong> {{ project.client or 'Not specified' }}<br>
+                        {% if project.location %}
+                        <strong>Location:</strong> {{ project.location }}<br>
+                        {% endif %}
+                        {% if project.status %}
+                        <strong>Status:</strong> 
+                        <span class="badge bg-secondary">{{ project.status }}</span>
+                        {% endif %}
+                    </p>
+                    
+                    {% if project.description %}
+                    <p class="card-text text-muted small">
+                        {{ project.description[:80] }}{{ '...' if project.description|length > 80 }}
+                    </p>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer">
+                    <button class="btn btn-primary btn-sm w-100" onclick="event.stopPropagation(); window.location.href='/project/{{ project.id }}'">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Pagination (if needed for large datasets) -->
+{% if projects|length > 20 %}
+<div class="row mt-4">
+    <div class="col-12">
+        <nav aria-label="Projects pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<!-- No Projects Found -->
+<div class="row">
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+            <h3 class="text-muted">No Projects Found</h3>
+            {% if search_query %}
+            <p class="text-muted">No projects match your search for "{{ search_query }}"</p>
+            <a href="{{ url_for('projects') }}" class="btn btn-primary">
+                <i class="fas fa-list"></i> Show All Projects
+            </a>
+            {% else %}
+            <p class="text-muted">No projects are currently available in the system.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Mobile floating action button -->
+<div class="d-md-none">
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
+        <button class="btn btn-primary rounded-circle" 
+                onclick="window.scrollTo(0, 0)"
+                style="width: 56px; height: 56px;">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let currentView = 'list';
+    
+    function toggleView() {
+        const listView = document.getElementById('list-view');
+        const gridView = document.getElementById('grid-view');
+        const viewIcon = document.getElementById('view-icon');
+        const viewText = document.getElementById('view-text');
+        
+        if (currentView === 'list') {
+            // Switch to grid view
+            listView.style.display = 'none';
+            gridView.style.display = 'flex';
+            viewIcon.className = 'fas fa-list';
+            viewText.textContent = 'List View';
+            currentView = 'grid';
+            localStorage.setItem('projectView', 'grid');
+        } else {
+            // Switch to list view
+            listView.style.display = 'block';
+            gridView.style.display = 'none';
+            viewIcon.className = 'fas fa-th';
+            viewText.textContent = 'Grid View';
+            currentView = 'list';
+            localStorage.setItem('projectView', 'list');
+        }
+    }
+    
+    // Load saved view preference
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedView = localStorage.getItem('projectView');
+        if (savedView && savedView !== currentView) {
+            toggleView();
+        }
+    });
+    
+    // Enhanced search with autocomplete
+    let searchTimeout;
+    const searchInput = document.querySelector('input[name="search"]');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const query = this.value;
+                if (query.length > 2) {
+                    // Could implement live search here
+                    console.log('Searching for:', query);
+                }
+            }, 300);
+        });
+    }
+    
+    // Add touch feedback for mobile
+    document.addEventListener('DOMContentLoaded', function() {
+        const projectCards = document.querySelectorAll('.project-card, .card');
+        
+        projectCards.forEach(card => {
+            card.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+                this.style.transition = 'transform 0.1s';
+            });
+            
+            card.addEventListener('touchend', function() {
+                this.style.transform = '';
+            });
+        });
+    });
+    
+    // Infinite scroll for large datasets (optional)
+    function initInfiniteScroll() {
+        let loading = false;
+        let page = 1;
+        
+        window.addEventListener('scroll', function() {
+            if (loading) return;
+            
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
+                loading = true;
+                // Load more projects
+                console.log('Loading more projects...');
+                
+                // Simulate loading delay
+                setTimeout(() => {
+                    loading = false;
+                }, 1000);
+            }
+        });
+    }
+    
+    // Initialize infinite scroll if there are many projects
+    if (document.querySelectorAll('.project-card, .card').length > 20) {
+        initInfiniteScroll();
+    }
+</script>
+{% endblock %}

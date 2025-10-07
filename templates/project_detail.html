@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.name or project.id }} - REMC{% endblock %}
+
+{% block content %}
+<!-- Project Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('projects') }}">Projects</a></li>
+                <li class="breadcrumb-item active">{{ project.id }}</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <h1>
+                    {{ project.name or project.id }}
+                    <span class="project-type {{ project.type.lower() }} ms-2">{{ project.type }}</span>
+                </h1>
+                <p class="text-muted mb-0">Project ID: {{ project.id }}</p>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-outline-primary" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <button class="btn btn-primary" onclick="refreshProjectData()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Project Information Tabs -->
+<div class="row">
+    <div class="col-12">
+        <ul class="nav nav-tabs" id="projectTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" 
+                        id="overview-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#overview" 
+                        type="button" 
+                        role="tab">
+                    <i class="fas fa-info-circle"></i> Overview
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" 
+                        id="emails-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#emails" 
+                        type="button" 
+                        role="tab">
+                    <i class="fas fa-envelope"></i> Emails <span class="badge bg-secondary">{{ emails|length }}</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" 
+                        id="attachments-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#attachments" 
+                        type="button" 
+                        role="tab">
+                    <i class="fas fa-paperclip"></i> Attachments
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Tab Content -->
+<div class="tab-content mt-3" id="projectTabContent">
+    <!-- Overview Tab -->
+    <div class="tab-pane fade show active" id="overview" role="tabpanel">
+        <div class="row">
+            <!-- Project Details -->
+            <div class="col-lg-8 col-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-clipboard-list"></i> Project Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Project Name:</strong><br>
+                                <span class="text-muted">{{ project.name or 'Not specified' }}</span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <strong>Project ID:</strong><br>
+                                <span class="text-muted">{{ project.id }}</span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <strong>Client:</strong><br>
+                                <span class="text-muted">{{ project.client or 'Not specified' }}</span>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <strong>Type:</strong><br>
+                                <span class="project-type {{ project.type.lower() }}">{{ project.type }}</span>
+                            </div>
+                            
+                            {% if project.location %}
+                            <div class="col-md-6 mb-3">
+                                <strong>Location:</strong><br>
+                                <span class="text-muted">{{ project.location }}</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if project.status %}
+                            <div class="col-md-6 mb-3">
+                                <strong>Status:</strong><br>
+                                <span class="badge bg-secondary">{{ project.status }}</span>
+                            </div>
+                            {% endif %}
+                            
+                            {% if project.description %}
+                            <div class="col-12 mb-3">
+                                <strong>Description:</strong><br>
+                                <span class="text-muted">{{ project.description }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Statistics -->
+            <div class="col-lg-4 col-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <div class="stats-number text-primary">{{ emails|length }}</div>
+                            <div class="stats-label">Tracked Emails</div>
+                        </div>
+                        
+                        <div class="text-center mb-3">
+                            <div class="stats-number text-info">
+                                {{ emails|selectattr('attachments')|list|length }}
+                            </div>
+                            <div class="stats-label">Emails with Attachments</div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="stats-number text-success">
+                                {% set total_attachments = emails|sum(attribute='attachments')|length if emails else 0 %}
+                                {{ total_attachments }}
+                            </div>
+                            <div class="stats-label">Total Attachments</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Emails Tab -->
+    <div class="tab-pane fade" id="emails" role="tabpanel">
+        {% if emails %}
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="input-group">
+                    <input type="text" 
+                           class="form-control" 
+                           id="email-search" 
+                           placeholder="Search emails by subject, sender, or content..."
+                           onkeyup="filterEmails()">
+                    <button class="btn btn-outline-secondary" onclick="clearEmailFilter()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="emails-container">
+            {% for email in emails %}
+            <div class="email-item" data-email-id="{{ email.id }}">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <h6 class="mb-1">{{ email.subject or 'No Subject' }}</h6>
+                        <p class="mb-1 text-muted">
+                            <i class="fas fa-user"></i> {{ email.sender or 'Unknown Sender' }}
+                        </p>
+                        <p class="mb-1 text-muted">
+                            <i class="fas fa-clock"></i> {{ email.received_time or 'Unknown Time' }}
+                        </p>
+                    </div>
+                    
+                    <div class="btn-group">
+                        {% if email.attachments %}
+                        <span class="badge bg-info">
+                            <i class="fas fa-paperclip"></i> {{ email.attachments|length }} attachments
+                        </span>
+                        {% endif %}
+                        
+                        <button class="btn btn-sm btn-outline-primary" 
+                                onclick="toggleEmailDetails('{{ email.id }}')">
+                            <i class="fas fa-eye"></i> Details
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Email Details (hidden by default) -->
+                <div id="email-details-{{ email.id }}" class="collapse">
+                    <hr>
+                    
+                    {% if email.body %}
+                    <div class="mb-3">
+                        <strong>Body:</strong>
+                        <div class="p-2 bg-light rounded mt-1">
+                            {{ email.body[:500] }}{{ '...' if email.body|length > 500 }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if email.attachments %}
+                    <div class="mb-3">
+                        <strong>Attachments:</strong>
+                        <div class="mt-2">
+                            {% for attachment in email.attachments %}
+                            <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded mb-2">
+                                <div>
+                                    <i class="fas fa-file"></i> {{ attachment.filename }}
+                                    <small class="text-muted">({{ attachment.size or 'Unknown size' }})</small>
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-primary" 
+                                            onclick="downloadAttachment('{{ email.id }}', '{{ attachment.filename }}')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button class="btn btn-outline-secondary" 
+                                            onclick="viewAttachment('{{ email.id }}', '{{ attachment.filename }}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-envelope fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No Emails Found</h4>
+            <p class="text-muted">No emails have been tracked for this project yet.</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Attachments Tab -->
+    <div class="tab-pane fade" id="attachments" role="tabpanel">
+        {% set all_attachments = [] %}
+        {% for email in emails %}
+            {% if email.attachments %}
+                {% for attachment in email.attachments %}
+                    {% set _ = all_attachments.append({'email_id': email.id, 'email_subject': email.subject, 'attachment': attachment}) %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        
+        {% if all_attachments %}
+        <div class="row">
+            {% for item in all_attachments %}
+            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="fas fa-file"></i> {{ item.attachment.filename }}
+                        </h6>
+                        <p class="card-text text-muted small">
+                            From: {{ item.email_subject or 'No Subject' }}<br>
+                            Size: {{ item.attachment.size or 'Unknown' }}
+                        </p>
+                        <div class="btn-group w-100">
+                            <button class="btn btn-primary btn-sm" 
+                                    onclick="downloadAttachment('{{ item.email_id }}', '{{ item.attachment.filename }}')">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" 
+                                    onclick="viewAttachment('{{ item.email_id }}', '{{ item.attachment.filename }}')">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-paperclip fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No Attachments Found</h4>
+            <p class="text-muted">No attachments have been found in the emails for this project.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function refreshProjectData() {
+        const button = event.target.closest('button');
+        const icon = button.querySelector('i');
+        
+        // Add spinning animation
+        icon.classList.add('fa-spin');
+        button.disabled = true;
+        
+        // Refresh the page
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    }
+    
+    function toggleEmailDetails(emailId) {
+        const detailsElement = document.getElementById(`email-details-${emailId}`);
+        const button = event.target.closest('button');
+        const icon = button.querySelector('i');
+        
+        if (detailsElement.classList.contains('show')) {
+            detailsElement.classList.remove('show');
+            icon.className = 'fas fa-eye';
+            button.innerHTML = '<i class="fas fa-eye"></i> Details';
+        } else {
+            detailsElement.classList.add('show');
+            icon.className = 'fas fa-eye-slash';
+            button.innerHTML = '<i class="fas fa-eye-slash"></i> Hide';
+        }
+    }
+    
+    function filterEmails() {
+        const searchTerm = document.getElementById('email-search').value.toLowerCase();
+        const emailItems = document.querySelectorAll('.email-item');
+        
+        emailItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+    
+    function clearEmailFilter() {
+        document.getElementById('email-search').value = '';
+        filterEmails();
+    }
+    
+    function downloadAttachment(emailId, filename) {
+        // In a real implementation, this would make an API call to download the attachment
+        alert(`Download functionality would be implemented here for: ${filename}`);
+        console.log('Download attachment:', emailId, filename);
+    }
+    
+    function viewAttachment(emailId, filename) {
+        // In a real implementation, this would open the attachment in a viewer
+        alert(`View functionality would be implemented here for: ${filename}`);
+        console.log('View attachment:', emailId, filename);
+    }
+    
+    // Auto-focus on email search when emails tab is activated
+    document.getElementById('emails-tab').addEventListener('shown.bs.tab', function () {
+        const searchInput = document.getElementById('email-search');
+        if (searchInput) {
+            searchInput.focus();
+        }
+    });
+    
+    // Save active tab to localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+        const triggerTabList = [].slice.call(document.querySelectorAll('#projectTabs button'));
+        
+        triggerTabList.forEach(function (triggerEl) {
+            const tabTrigger = new bootstrap.Tab(triggerEl);
+            
+            triggerEl.addEventListener('click', function (event) {
+                event.preventDefault();
+                tabTrigger.show();
+                localStorage.setItem('activeProjectTab', triggerEl.id);
+            });
+        });
+        
+        // Restore active tab
+        const activeTab = localStorage.getItem('activeProjectTab');
+        if (activeTab) {
+            const tabElement = document.getElementById(activeTab);
+            if (tabElement) {
+                const tab = new bootstrap.Tab(tabElement);
+                tab.show();
+            }
+        }
+    });
+</script>
+{% endblock %}

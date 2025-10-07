@@ -1,0 +1,9 @@
+<!-- This is a placeholder for the app icon -->
+<!-- In a real implementation, you would create actual PNG icon files -->
+<!-- For now, we'll use CSS to create a simple icon -->
+<svg width="192" height="192" xmlns="http://www.w3.org/2000/svg">
+  <rect width="192" height="192" fill="#1a472a" rx="24"/>
+  <text x="96" y="120" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#ffd700">REMC</text>
+  <circle cx="96" cy="70" r="25" fill="#ffd700"/>
+  <rect x="80" y="55" width="32" height="10" fill="#1a472a"/>
+</svg>

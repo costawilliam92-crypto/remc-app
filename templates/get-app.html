@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get REMC App</title>
+    
+    <!-- PWA Meta Tags for Auto-Install -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="REMC">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a472a">
+    
+    <!-- Auto-install manifest -->
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="apple-touch-icon" href="/static/icon-192.svg">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a472a, #2d5a3d);
+            color: white;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .app-icon {
+            width: 100px;
+            height: 100px;
+            background: #ffd700;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 50px;
+            color: #1a472a;
+        }
+        
+        .install-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px auto;
+            display: block;
+            width: 250px;
+            cursor: pointer;
+        }
+        
+        .status {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 300px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-icon">🏗️</div>
+    <h1>REMC App</h1>
+    <p>Professional Project Management</p>
+    
+    <button class="install-btn" onclick="quickInstall()" id="install-btn">
+        📱 Get REMC App
+    </button>
+    
+    <div class="status" id="status">
+        <p id="status-text">Installing...</p>
+    </div>
+    
+    <p><small>Tap the button above to install REMC on your phone</small></p>
+
+    <script>
+        function showStatus(text) {
+            document.getElementById('status-text').textContent = text;
+            document.getElementById('status').style.display = 'block';
+        }
+        
+        function quickInstall() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            
+            if (isIOS) {
+                // For iOS - redirect to main app with install trigger
+                showStatus('Redirecting to install page...');
+                setTimeout(() => {
+                    window.location.href = '/install';
+                }, 1000);
+            } else if (isAndroid) {
+                // For Android - try PWA install
+                if (window.deferredPrompt) {
+                    window.deferredPrompt.prompt();
+                } else {
+                    window.location.href = '/install';
+                }
+            } else {
+                // For desktop - open web app
+                window.location.href = '/';
+            }
+        }
+        
+        // Auto-redirect for iOS after 3 seconds
+        window.addEventListener('load', function() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (isIOS) {
+                setTimeout(() => {
+                    showStatus('Auto-redirecting to install...');
+                    setTimeout(() => {
+                        window.location.href = '/install';
+                    }, 1500);
+                }, 3000);
+            }
+        });
+        
+        // PWA install prompt handling
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            window.deferredPrompt = e;
+        });
+    </script>
+</body>
+</html>

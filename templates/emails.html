@@ -1,0 +1,419 @@
+{% extends "base.html" %}
+
+{% block title %}Email Tracking - REMC{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-envelope"></i> Email Tracking
+            <small class="text-muted">({{ emails|length }} emails tracked)</small>
+        </h1>
+    </div>
+</div>
+
+<!-- Search and Filter Controls -->
+<div class="row mb-4">
+    <div class="col-lg-6 col-md-12 mb-3">
+        <div class="input-group">
+            <input type="text" 
+                   class="form-control search-box" 
+                   id="email-search" 
+                   placeholder="Search emails by subject, sender, project..."
+                   onkeyup="filterEmails()">
+            <button class="btn btn-outline-secondary" onclick="clearFilter()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <select class="form-control" id="project-filter" onchange="filterByProject()">
+            <option value="">All Projects</option>
+            {% set projects = emails|map(attribute='tracked_project_id')|unique|list %}
+            {% for project_id in projects %}
+                {% if project_id %}
+                <option value="{{ project_id }}">{{ project_id }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <select class="form-control" id="date-filter" onchange="filterByDate()">
+            <option value="">All Dates</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+        </select>
+    </div>
+</div>
+
+<!-- Email Statistics -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card text-center">
+            <div class="stats-number">{{ emails|length }}</div>
+            <div class="stats-label">Total Emails</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card text-center" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+            <div class="stats-number">{{ emails|selectattr('attachments')|list|length }}</div>
+            <div class="stats-label">With Attachments</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card text-center" style="background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);">
+            <div class="stats-number">
+                {% set unique_projects = emails|map(attribute='tracked_project_id')|unique|list|length %}
+                {{ unique_projects }}
+            </div>
+            <div class="stats-label">Projects Involved</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="stats-card text-center" style="background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);">
+            <div class="stats-number">
+                {% set recent_count = 0 %}
+                {% for email in emails %}
+                    {% if email.received_time %}
+                        {% set _ = recent_count + 1 if 'recent' in email.received_time else recent_count %}
+                    {% endif %}
+                {% endfor %}
+                {{ recent_count }}
+            </div>
+            <div class="stats-label">Recent (7 days)</div>
+        </div>
+    </div>
+</div>
+
+<!-- Emails List -->
+{% if emails %}
+<div id="emails-container">
+    {% for email in emails %}
+    <div class="email-item" 
+         data-email-id="{{ email.id }}"
+         data-project-id="{{ email.tracked_project_id or '' }}"
+         data-date="{{ email.received_time or '' }}">
+        
+        <div class="row align-items-center">
+            <div class="col-lg-6 col-md-8 col-12">
+                <h6 class="mb-1">{{ email.subject or 'No Subject' }}</h6>
+                
+                <p class="mb-1 text-muted">
+                    <i class="fas fa-user"></i> {{ email.sender or 'Unknown Sender' }}
+                </p>
+                
+                <p class="mb-1 text-muted">
+                    <i class="fas fa-clock"></i> {{ email.received_time or 'Unknown Time' }}
+                </p>
+                
+                {% if email.tracked_project_id %}
+                <p class="mb-0">
+                    <i class="fas fa-folder"></i> 
+                    <a href="/project/{{ email.tracked_project_id }}" class="text-decoration-none">
+                        {{ email.tracked_project_id }}
+                    </a>
+                </p>
+                {% endif %}
+            </div>
+            
+            <div class="col-lg-3 col-md-4 col-12">
+                {% if email.attachments %}
+                <div class="mb-2">
+                    <span class="badge bg-info">
+                        <i class="fas fa-paperclip"></i> {{ email.attachments|length }} attachment{{ 's' if email.attachments|length > 1 }}
+                    </span>
+                </div>
+                {% endif %}
+                
+                {% if email.email_type %}
+                <div class="mb-2">
+                    <span class="badge bg-secondary">{{ email.email_type }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-lg-3 col-md-12 col-12 text-end">
+                <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-primary" 
+                            onclick="toggleEmailDetails('{{ email.id }}')">
+                        <i class="fas fa-eye"></i> <span class="d-none d-md-inline">Details</span>
+                    </button>
+                    
+                    {% if email.tracked_project_id %}
+                    <a href="/project/{{ email.tracked_project_id }}" 
+                       class="btn btn-sm btn-primary">
+                        <i class="fas fa-folder-open"></i> <span class="d-none d-md-inline">Project</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Email Details (collapsed by default) -->
+        <div id="email-details-{{ email.id }}" class="collapse mt-3">
+            <hr>
+            
+            <div class="row">
+                <div class="col-lg-8 col-12">
+                    {% if email.body %}
+                    <div class="mb-3">
+                        <strong>Email Body:</strong>
+                        <div class="p-3 bg-light rounded mt-2" style="max-height: 200px; overflow-y: auto;">
+                            {{ email.body }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if email.to %}
+                    <div class="mb-3">
+                        <strong>Recipients:</strong> {{ email.to }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-lg-4 col-12">
+                    {% if email.attachments %}
+                    <div class="mb-3">
+                        <strong>Attachments:</strong>
+                        <div class="mt-2">
+                            {% for attachment in email.attachments %}
+                            <div class="d-flex justify-content-between align-items-center p-2 bg-white rounded border mb-2">
+                                <div>
+                                    <i class="fas fa-file"></i> 
+                                    <span class="ms-1">{{ attachment.filename }}</span>
+                                    {% if attachment.size %}
+                                    <br><small class="text-muted">{{ attachment.size }}</small>
+                                    {% endif %}
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-primary" 
+                                            onclick="downloadAttachment('{{ email.id }}', '{{ attachment.filename }}')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button class="btn btn-outline-secondary" 
+                                            onclick="viewAttachment('{{ email.id }}', '{{ attachment.filename }}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Email Metadata -->
+                    <div class="mb-3">
+                        <strong>Email Information:</strong>
+                        <div class="mt-2 small text-muted">
+                            {% if email.message_id %}
+                            <div>Message ID: {{ email.message_id[:30] }}...</div>
+                            {% endif %}
+                            {% if email.store_id %}
+                            <div>Store ID: {{ email.store_id[:30] }}...</div>
+                            {% endif %}
+                            {% if email.entry_id %}
+                            <div>Entry ID: {{ email.entry_id[:30] }}...</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Load More Button (for pagination) -->
+{% if emails|length > 20 %}
+<div class="text-center mt-4">
+    <button class="btn btn-outline-primary" onclick="loadMoreEmails()">
+        <i class="fas fa-plus"></i> Load More Emails
+    </button>
+</div>
+{% endif %}
+
+{% else %}
+<!-- No Emails Message -->
+<div class="text-center py-5">
+    <i class="fas fa-envelope-open fa-3x text-muted mb-3"></i>
+    <h3 class="text-muted">No Emails Tracked</h3>
+    <p class="text-muted">No emails have been tracked yet. Use the Outlook integration to start tracking emails.</p>
+    
+    <div class="mt-4">
+        <a href="{{ url_for('help_page') }}" class="btn btn-primary">
+            <i class="fas fa-question-circle"></i> Setup Help
+        </a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function filterEmails() {
+        const searchTerm = document.getElementById('email-search').value.toLowerCase();
+        const emailItems = document.querySelectorAll('.email-item');
+        
+        emailItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        updateResultsCount();
+    }
+    
+    function filterByProject() {
+        const selectedProject = document.getElementById('project-filter').value;
+        const emailItems = document.querySelectorAll('.email-item');
+        
+        emailItems.forEach(item => {
+            const projectId = item.getAttribute('data-project-id');
+            if (!selectedProject || projectId === selectedProject) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        updateResultsCount();
+    }
+    
+    function filterByDate() {
+        const selectedPeriod = document.getElementById('date-filter').value;
+        const emailItems = document.querySelectorAll('.email-item');
+        
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+        
+        emailItems.forEach(item => {
+            const dateStr = item.getAttribute('data-date');
+            if (!selectedPeriod) {
+                item.style.display = 'block';
+                return;
+            }
+            
+            if (!dateStr) {
+                item.style.display = 'none';
+                return;
+            }
+            
+            // Parse date (handle different formats)
+            let emailDate;
+            try {
+                emailDate = new Date(dateStr);
+            } catch {
+                item.style.display = 'none';
+                return;
+            }
+            
+            let shouldShow = false;
+            switch (selectedPeriod) {
+                case 'today':
+                    shouldShow = emailDate >= today;
+                    break;
+                case 'week':
+                    shouldShow = emailDate >= weekAgo;
+                    break;
+                case 'month':
+                    shouldShow = emailDate >= monthAgo;
+                    break;
+            }
+            
+            item.style.display = shouldShow ? 'block' : 'none';
+        });
+        
+        updateResultsCount();
+    }
+    
+    function clearFilter() {
+        document.getElementById('email-search').value = '';
+        document.getElementById('project-filter').value = '';
+        document.getElementById('date-filter').value = '';
+        
+        const emailItems = document.querySelectorAll('.email-item');
+        emailItems.forEach(item => {
+            item.style.display = 'block';
+        });
+        
+        updateResultsCount();
+    }
+    
+    function updateResultsCount() {
+        const visibleItems = document.querySelectorAll('.email-item[style*="block"], .email-item:not([style*="none"])');
+        const totalItems = document.querySelectorAll('.email-item');
+        
+        // Update the header count
+        const header = document.querySelector('h1 small');
+        if (header) {
+            header.textContent = `(${visibleItems.length} of ${totalItems.length} emails shown)`;
+        }
+    }
+    
+    function toggleEmailDetails(emailId) {
+        const detailsElement = document.getElementById(`email-details-${emailId}`);
+        const button = event.target.closest('button');
+        const icon = button.querySelector('i');
+        
+        if (detailsElement.classList.contains('show')) {
+            detailsElement.classList.remove('show');
+            icon.className = 'fas fa-eye';
+        } else {
+            detailsElement.classList.add('show');
+            icon.className = 'fas fa-eye-slash';
+        }
+    }
+    
+    function downloadAttachment(emailId, filename) {
+        // Placeholder for download functionality
+        alert(`Download functionality would be implemented here for: ${filename}`);
+        console.log('Download attachment:', emailId, filename);
+    }
+    
+    function viewAttachment(emailId, filename) {
+        // Placeholder for view functionality
+        alert(`View functionality would be implemented here for: ${filename}`);
+        console.log('View attachment:', emailId, filename);
+    }
+    
+    function loadMoreEmails() {
+        // Placeholder for pagination
+        alert('Load more functionality would be implemented here');
+    }
+    
+    // Auto-refresh emails every 5 minutes
+    function refreshEmails() {
+        fetch('/api/emails/refresh')
+            .then(response => response.json())
+            .then(data => {
+                if (data.new_emails > 0) {
+                    // Show notification or refresh page
+                    console.log(`${data.new_emails} new emails found`);
+                }
+            })
+            .catch(error => {
+                console.error('Email refresh error:', error);
+            });
+    }
+    
+    // Set up auto-refresh
+    setInterval(refreshEmails, 300000); // 5 minutes
+    
+    // Initialize filters on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateResultsCount();
+    });
+</script>
+{% endblock %}
